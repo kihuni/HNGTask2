@@ -1,20 +1,21 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Organisation
+import uuid
 
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('userId', 'firstName', 'lastName', 'email', 'phone', 'password')
+        fields = ('firstName', 'lastName', 'email', 'phone', 'password')
         extra_kwargs = {
             'password': {'write_only': True}
         }
 
     def create(self, validated_data):
         user = User(
-            userId=validated_data['userId'],
+            userId=str(uuid.uuid4()),  # Automatically generate userId
             firstName=validated_data['firstName'],
             lastName=validated_data['lastName'],
             email=validated_data['email'],

@@ -11,7 +11,6 @@ class UserTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user_data = {
-            "userId": "unique123",
             "firstName": "John",
             "lastName": "Doe",
             "email": "john.doe@example.com",
@@ -47,7 +46,6 @@ class UserTests(TestCase):
         
         # Access control: another user should not access this organization
         another_user_data = {
-            "userId": "unique456",
             "firstName": "Jane",
             "lastName": "Doe",
             "email": "jane.doe@example.com",
@@ -62,11 +60,10 @@ class UserTests(TestCase):
         else:
             print(f"Access Control Test Response (Another User): {response.status_code} - {response.data}")
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-            
+
 class RegisterEndpointTests(APITestCase):
     def test_register_user_successfully(self):
         data = {
-            "userId": "unique124",
             "firstName": "John",
             "lastName": "Doe",
             "email": "john@example.com",
@@ -77,9 +74,8 @@ class RegisterEndpointTests(APITestCase):
         print(f"Register Test Response: {response.status_code} - {response.data}")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_duplicate_email_or_userId(self):
+    def test_duplicate_email(self):
         data = {
-            "userId": "unique125",
             "firstName": "John",
             "lastName": "Doe",
             "email": "john@example.com",
@@ -92,7 +88,6 @@ class RegisterEndpointTests(APITestCase):
 
     def test_login_user_successfully(self):
         data = {
-            "userId": "unique126",
             "firstName": "John",
             "lastName": "Doe",
             "email": "john@example.com",
