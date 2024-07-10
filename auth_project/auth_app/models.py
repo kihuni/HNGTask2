@@ -61,7 +61,7 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 class Organisation(models.Model):
-    orgId = models.CharField(max_length=255, unique=True)
+    orgId = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     users = models.ManyToManyField(User, related_name='organisations')

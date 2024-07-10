@@ -54,18 +54,14 @@ class RegisterView(generics.CreateAPIView):
             'errors': serializer.errors
         }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-
-
 class LoginView(generics.GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
-        print(f"Attempting to authenticate user with email: {email}")
         user = authenticate(request, email=email, password=password)
         if user is not None:
-            print("Authentication successful")
             refresh = RefreshToken.for_user(user)
             return Response({
                 'status': 'success',
@@ -81,13 +77,11 @@ class LoginView(generics.GenericAPIView):
                     }
                 }
             }, status=status.HTTP_200_OK)
-        print("Authentication failed")
         return Response({
             'status': 'Bad request',
             'message': 'Authentication failed',
             'statusCode': 401
         }, status=status.HTTP_401_UNAUTHORIZED)
-
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -120,7 +114,7 @@ class OrganisationDetailView(generics.RetrieveAPIView):
     queryset = Organisation.objects.all()
     serializer_class = OrganisationSerializer
     permission_classes = [permissions.IsAuthenticated]
-    lookup_field = 'orgId'  # Correct the attribute name to 'lookup_field'
+    lookup_field = 'orgId'
 
     def get(self, request, *args, **kwargs):
         try:
@@ -143,8 +137,6 @@ class OrganisationDetailView(generics.RetrieveAPIView):
                 'message': 'Organisation not found',
                 'statusCode': 404
             }, status=status.HTTP_404_NOT_FOUND)
-
-
 
 class OrganisationCreateView(generics.CreateAPIView):
     serializer_class = OrganisationSerializer
@@ -189,7 +181,7 @@ class AddUserToOrganisationView(generics.UpdateAPIView):
             }, status=status.HTTP_403_FORBIDDEN)
         except User.DoesNotExist:
             return Response({
-                'status': 'Bad Request',
+                'status': 'Not Found',
                 'message': 'User not found',
-                'statusCode': 400
-            }, status=status.HTTP_400_BAD_REQUEST)
+                'statusCode': 404
+            }, status=status.HTTP_404_NOT_FOUND)
